@@ -1,17 +1,17 @@
 {
   "development": {
-    "username": "postgres",
-    "password": "postgres",
+    "username": "matheus",
+    "password": "senhabanco",
     "database": "projeto_orm",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "mysql"
   },
   "test": {
-    "username": "postgres",
-    "password": "postgres",
+    "username": "matheus",
+    "password": "senhabanco",
     "database": "projeto_orm_test",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "mysql"
   },
   "production": {
     "username": "root",
