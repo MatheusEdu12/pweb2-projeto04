@@ -96,14 +96,27 @@ const updateCategory = async (req, res) => {
           },
         ],
       });
+
+      // Enviar email de notificação para o administrador
+      const mailOptions = {
+        from: 'matheuslrego7@gmail.com',
+        to: 'matheus.rego@academico.uncisal.edu.br',
+        subject: 'Categoria atualizada',
+        text: `A categoria foi atualizada: ${updatedCategory.name}`,
+        html: `<p>A categoria foi atualizada: ${updatedCategory.name}</p>`,
+      };
+
+      // Enviar email
+      await transporter.sendMail(mailOptions);
+
       return res.status(200).json(updatedCategory);
     }
-
-    throw new Error('Category not found ');
+    throw new Error('Category not found');
   } catch (error) {
     return res.status(500).send(error.message);
   }
 };
+
 
 /**
  * Deletes a single category by it's id

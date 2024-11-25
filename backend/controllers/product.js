@@ -4,6 +4,7 @@ const uploadToCloudinary = require('../middlewares/upload-cloud');
 const upload = multer({ storage: multer.memoryStorage() });
 const { v4: uuidv4 } = require('uuid');
 const { body, validationResult } = require('express-validator');
+const transporter = require('../config/nodemailer');
 
 /**
  * Creates a new product
@@ -117,12 +118,26 @@ const updateProductById = [
       }
 
       await product.update(updatedData);
-      return res.status(200).json( product );
+
+      // Enviar email de notificação para o administrador
+      const mailOptions = {
+        from: 'matheuslrego7@gmail.com',
+        to: 'matheus.rego@academico.uncisal.edu.br',
+        subject: 'Produto atualizado',
+        text: `O produto foi atualizado: ${product.name}`,
+        html: `<p>O produto foi atualizado: ${product.name}</p>`,
+      };
+
+      // Enviar email
+      await transporter.sendMail(mailOptions);
+
+      return res.status(200).json(product);
     } catch (error) {
       return res.status(500).send(error.message);
     }
   }
 ];
+
 
 
 /**
