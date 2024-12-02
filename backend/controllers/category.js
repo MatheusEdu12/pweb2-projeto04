@@ -1,6 +1,8 @@
 const { Category, Product } = require('../models');
 const { v4: uuidv4 } = require('uuid');
 const transporter = require('../config/nodemailer');
+const authMiddleware = require('../middlewares/auth');
+
 
 /**
  * Creates a new category
@@ -14,8 +16,8 @@ const createCategory = async (req, res) => {
 
     // Enviar email de notificação para o administrador
     const mailOptions = {
-      from: 'matheuslrego7@gmail.com',
-      to: 'matheus.rego@academico.uncisal.edu.br',
+      from: 'matheus.rego@academico.uncisal.edu.br',
+      to: 'matheuslrego7@gmail.com',
       subject: 'Nova categoria criada',
       text: `Uma nova categoria foi criada: ${category.name}`,
       html: `<p>Uma nova categoria foi criada: ${category.name}</p>`,
@@ -111,12 +113,12 @@ const updateCategory = async (req, res) => {
 
       return res.status(200).json(updatedCategory);
     }
-    throw new Error('Category not found');
+
+    throw new Error('Category not found ');
   } catch (error) {
     return res.status(500).send(error.message);
   }
 };
-
 
 /**
  * Deletes a single category by it's id
@@ -145,7 +147,7 @@ const deleteCategory = async (req, res) => {
 
 module.exports = {
   createCategory,
-  getAllCategories,
+  getAllCategories: [authMiddleware, getAllCategories],
   getCategoryById,
   updateCategory,
   deleteCategory,

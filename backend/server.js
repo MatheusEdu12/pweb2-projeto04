@@ -7,6 +7,7 @@ const express = require('express')
 const cors = require('cors')
 const logger = require('morgan')
 const helmet = require('helmet')
+const cookieParser = require('cookie-parser');
 
 // Routes import
 const routes = require('./routes')
@@ -19,7 +20,7 @@ const port = process.env.PORT || 3335
 
 // CORS
 const corsOptions = {
-  origin: `${process.env.FRONTEND_URL}`,
+  origin: `${process.env.FRONTEND_URL || 'http://localhost:3000'}`,
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
   allowedHeaders: ['Content-Type', 'Authorization'],
 }
@@ -30,6 +31,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(logger('dev'))
 app.use(helmet())
+app.use(cookieParser());
 
 // Routes middleware
 app.use('/api', routes)

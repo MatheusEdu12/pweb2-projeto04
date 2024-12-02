@@ -4,7 +4,6 @@ const uploadToCloudinary = require('../middlewares/upload-cloud');
 const upload = multer({ storage: multer.memoryStorage() });
 const { v4: uuidv4 } = require('uuid');
 const { body, validationResult } = require('express-validator');
-const transporter = require('../config/nodemailer');
 
 /**
  * Creates a new product
@@ -94,6 +93,12 @@ const getProductById = async (req, res) => {
  * @returns boolean
  */
 const updateProductById = [
+  // Upload de arquivo em disco
+  upload.single('productImage'),
+
+  // Upload de arquivo em nuvem
+  uploadToCloudinary,
+
   body('name').optional().notEmpty().withMessage('Nome não pode estar vazio'),
   body('price').optional().isNumeric().withMessage('O preço deve ser numérico'),
 
@@ -115,6 +120,11 @@ const updateProductById = [
       const updatedData = req.body;
       if (updatedData.name) {
         updatedData.name = updatedData.name.toLowerCase(); // Converter nome para minúsculo
+
+        // updatedData.productImage = req.file.filename || null; // Upload de arquivo em disco
+        updatedData.productImage = req.cloudinaryUrl || null; // Upload de arquivo em nuvem
+
+        updatedData.updatedAt = new Date();
       }
 
       await product.update(updatedData);
@@ -131,13 +141,12 @@ const updateProductById = [
       // Enviar email
       await transporter.sendMail(mailOptions);
 
-      return res.status(200).json(product);
+      return res.status(200).json( product );
     } catch (error) {
       return res.status(500).send(error.message);
     }
   }
 ];
-
 
 
 /**
